@@ -9,6 +9,7 @@
             </li>
         </ul>
         <button ng-hide="auth.user" ui-sref="login" class="btn login-button">Login</button>
+        <span class='badge'>{{ cart.counter }}</span>
         <div ng-show="auth.user" class="welcome">
             <span>Welcome, {{ auth.user.email }}!</span>
             <a ng-click="logout()">Logout</a>

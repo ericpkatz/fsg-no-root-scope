@@ -48,7 +48,7 @@
         ]);
     });
 
-    app.factory('AuthService', function ($http, $q) {
+    app.factory('AuthService', function ($http, $q, $rootScope) {
       var _authPromise = null;
       var _auth = {};
       return {
@@ -56,16 +56,18 @@
         getUser: function(){
           if(_authPromise)
             return _authPromise;
-          return $http.get('/session')
+          _authPromise = $http.get('/session')
             .then(function(response){
               angular.copy(response.data, _auth);
               return _auth;
             });
+          return _authPromise;
         },
         login: function(credentials){
             return $http.post('/login', credentials)
                 .then(function(response){
                   angular.copy(response.data, _auth);
+                  $rootScope.$broadcast('LOGGEDIN');
                   return _auth;
                 })
                 .catch(function () {
@@ -75,6 +77,7 @@
         logout: function(){
           var that = this;
             return $http.get('/logout').then(function () {
+              $rootScope.$broadcast('LOGGEDOUT');
               that.resetUser();
             });
         },
